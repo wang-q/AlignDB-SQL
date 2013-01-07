@@ -1,4 +1,5 @@
 package AlignDB::SQL;
+
 # ABSTRACT: An SQL statement
 
 use Moose;
@@ -17,10 +18,10 @@ has 'joins' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'where' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'bind'  => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'limit' => ( is => 'rw', isa => 'Int' );
-has 'offset' => ( is => 'rw', );
-has 'group'  => ( is => 'rw', );
-has 'order'  => ( is => 'rw', );
-has 'having' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'offset'       => ( is => 'rw', );
+has 'group'        => ( is => 'rw', );
+has 'order'        => ( is => 'rw', );
+has 'having'       => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'where_values' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 has '_sql'   => ( is => 'rw', isa => 'Str', default => '' );
 has 'indent' => ( is => 'rw', isa => 'Str', default => ' ' x 2 );
@@ -50,6 +51,26 @@ sub add_join {
         table => $table,
         joins => ref($joins) eq 'ARRAY' ? $joins : [$joins],
         };
+}
+
+sub as_header {
+    my $self = shift;
+
+    my @terms;
+    if ( @{ $self->select } ) {
+        my %select_map = %{ $self->select_map };
+        for my $term ( @{ $self->select } ) {
+            if ( exists $select_map{$term} ) {
+                my $alias = $select_map{$term};
+                push @terms, $alias;
+            }
+            else {
+                push @terms, $term;
+            }
+        }
+    }
+
+    return @terms;
 }
 
 sub as_sql {
@@ -131,15 +152,16 @@ sub as_limit {
 }
 
 sub as_aggregate {
-    my $self = shift;
-    my ($set) = @_;
+    my $self   = shift;
+    my ($set)  = @_;
     my $indent = $self->indent;
 
     if ( my $attribute = $self->$set() ) {
         my $elements
             = ( ref($attribute) eq 'ARRAY' ) ? $attribute : [$attribute];
         return
-            uc($set) . " BY\n$indent"
+              uc($set) 
+            . " BY\n$indent"
             . join( ",\n$indent",
             map { $_->{column} . ( $_->{desc} ? ( ' ' . $_->{desc} ) : '' ) }
                 @$elements )
