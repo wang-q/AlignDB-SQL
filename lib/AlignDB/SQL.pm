@@ -70,6 +70,15 @@ sub as_header {
         }
     }
 
+    if ( keys %{ $self->replace } ) {
+        for my $find ( keys %{ $self->replace } ) {
+            my $replace = ${ $self->replace }{$find};
+            for (@terms) {
+                s/\Q$find\E/$replace/gi;
+            }
+        }
+    }
+
     return @terms;
 }
 
@@ -113,7 +122,7 @@ sub as_sql {
             $sql .= $table unless $initial_table_written++;
             for my $join ( @{ $j->{joins} } ) {
                 $sql
-                    .= "\n" 
+                    .= "\n"
                     . $indent
                     . uc( $join->{type} )
                     . ' JOIN '
@@ -160,7 +169,7 @@ sub as_aggregate {
         my $elements
             = ( ref($attribute) eq 'ARRAY' ) ? $attribute : [$attribute];
         return
-              uc($set) 
+              uc($set)
             . " BY\n$indent"
             . join( ",\n$indent",
             map { $_->{column} . ( $_->{desc} ? ( ' ' . $_->{desc} ) : '' ) }
