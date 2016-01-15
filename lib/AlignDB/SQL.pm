@@ -1,37 +1,26 @@
 package AlignDB::SQL;
-
-# ABSTRACT: An SQL statement
-
 use Moose;
 use MooseX::Storage;
-
 use YAML qw(Dump Load DumpFile LoadFile);
-
 with Storage( 'format' => 'YAML' );
 
-has 'select'     => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'select_map' => ( is => 'rw', isa => 'HashRef',  default => sub { {} } );
-has 'select_map_reverse' =>
-    ( is => 'rw', isa => 'HashRef', default => sub { {} } );
-has 'from'  => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'joins' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'where' => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'bind'  => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'limit' => ( is => 'rw', isa => 'Int' );
-has 'offset'       => ( is => 'rw', );
-has 'group'        => ( is => 'rw', );
-has 'order'        => ( is => 'rw', );
-has 'having'       => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'where_values' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
-has '_sql'   => ( is => 'rw', isa => 'Str', default => '' );
-has 'indent' => ( is => 'rw', isa => 'Str', default => ' ' x 2 );
+our $VERSION = '1.0.0';
 
-=attr replace
-
-with this, as_sql() method will replace strings in the final SQL statement
-
-=cut
-
+has 'select'             => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'select_map'         => ( is => 'rw', isa => 'HashRef',  default => sub { {} } );
+has 'select_map_reverse' => ( is => 'rw', isa => 'HashRef',  default => sub { {} } );
+has 'from'               => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'joins'              => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'where'              => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'bind'               => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'limit'              => ( is => 'rw', isa => 'Int' );
+has 'offset'             => ( is => 'rw', );
+has 'group'              => ( is => 'rw', );
+has 'order'              => ( is => 'rw', );
+has 'having'             => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'where_values'       => ( is => 'rw', isa => 'HashRef',  default => sub { {} } );
+has '_sql'    => ( is => 'rw', isa => 'Str',     default => '' );
+has 'indent'  => ( is => 'rw', isa => 'Str',     default => ' ' x 2 );
 has 'replace' => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
 
 sub add_select {
@@ -156,8 +145,7 @@ sub as_limit {
     my $self = shift;
     my $n    = $self->limit
         or return '';
-    return sprintf "LIMIT %d%s\n", $n,
-        ( $self->offset ? " OFFSET " . int( $self->offset ) : "" );
+    return sprintf "LIMIT %d%s\n", $n, ( $self->offset ? " OFFSET " . int( $self->offset ) : "" );
 }
 
 sub as_aggregate {
@@ -172,8 +160,7 @@ sub as_aggregate {
               uc($set)
             . " BY\n$indent"
             . join( ",\n$indent",
-            map { $_->{column} . ( $_->{desc} ? ( ' ' . $_->{desc} ) : '' ) }
-                @$elements )
+            map { $_->{column} . ( $_->{desc} ? ( ' ' . $_->{desc} ) : '' ) } @$elements )
             . "\n";
     }
 
@@ -282,6 +269,14 @@ sub _mk_term {
 
 __END__
 
+=pod
+
+=encoding UTF-8
+
+=head1 NAME
+
+AlignDB::SQL - An SQL statement generator.
+
 =head1 SYNOPSIS
 
     my $sql = AlignDB::SQL->new();
@@ -295,7 +290,7 @@ __END__
     my $sth = $dbh->prepare($sql->as_sql);
     $sth->execute(@{ $sql->{bind} });
     my @values = $sth->selectrow_array();
-    
+
     my $obj = SomeObject->new();
     $obj->set_columns(...);
 
@@ -305,6 +300,25 @@ I<AlignDB::SQL> represents an SQL statement.
 
 Most codes come from Data::ObjectDriver::SQL
 
+=head1 ATTRIBUTES
+
+=head2 replace
+
+with this, as_sql() method will replace strings in the final SQL statement
+
 =head1 ACKNOWLEDGEMENTS
 
 Sixapart
+
+=head1 AUTHOR
+
+Qiang Wang <wang-q@outlook.com>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2008 by Qiang Wang.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

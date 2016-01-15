@@ -8,4 +8,4 @@ BEGIN {
     use_ok('AlignDB::SQL::Library');
 }
 
-diag("Testing AlignDB::SQL::Library $AlignDB::SQL::Library::VERSION");
+diag("Testing AlignDB::SQL::Library $AlignDB::SQL::VERSION");
