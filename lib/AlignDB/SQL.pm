@@ -4,7 +4,7 @@ use MooseX::Storage;
 use YAML qw(Dump Load DumpFile LoadFile);
 with Storage( 'format' => 'YAML' );
 
-our $VERSION = '1.0.0';
+our $VERSION = '1.0.1';
 
 has 'select'             => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 has 'select_map'         => ( is => 'rw', isa => 'HashRef',  default => sub { {} } );
