@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/wang-q/AlignDB-SQL.svg?branch=master)](https://travis-ci.org/wang-q/AlignDB-SQL)
+[![codecov](https://codecov.io/gh/wang-q/AlignDB-SQL/branch/master/graph/badge.svg)](https://codecov.io/gh/wang-q/AlignDB-SQL)
+[![Cpan version](https://img.shields.io/cpan/v/AlignDB-SQL.svg)](https://metacpan.org/release/AlignDB-SQL)
+
 # NAME
 
 AlignDB::SQL - An SQL statement generator.
