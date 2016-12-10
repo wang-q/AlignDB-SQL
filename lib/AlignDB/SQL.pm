@@ -216,6 +216,7 @@ sub add_having {
     push @{ $self->{bind} },   @$bind;
 }
 
+#@returns AlignDB::SQL
 sub copy {
     my $self = shift;
     my $copy = __PACKAGE__->thaw( $self->freeze );

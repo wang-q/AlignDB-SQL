@@ -39,6 +39,8 @@ sub retr {
     return $self->{contents}->{$entity_name};
 }
 
+#@method
+#@returns AlignDB::SQL
 sub retrieve {
     my $self        = shift;
     my $entity_name = shift;
