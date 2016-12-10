@@ -2,6 +2,9 @@ Revision history for AlignDB-SQL
 
 {{$NEXT}}
 
+1.0.2  2016-12-11 01:05:49 CST
+    - Add subs annotations for Perl5-IDEA
+
 1.0.1  2016-12-10 01:16:05 CST
     - Add badges
     - Add travis CI
